@@ -1,0 +1,14 @@
+{
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "[zmodel]": {
+    "editor.defaultFormatter": "zenstack.zenstack"
+  }
+}
