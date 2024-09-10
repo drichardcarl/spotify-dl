@@ -81,6 +81,10 @@ function getTracks(items: Record<string, any>[]) {
 }
 
 const getTrackName = (track: SpotifyTrack) => `${track.name} - ${track.artist}`;
+const padNumber = (number: number, reference: number): string => {
+  const referenceLength = reference.toString().length;
+  return number.toString().padStart(referenceLength, "0");
+};
 
 // Function to get album or playlist info
 async function getSpotifyResource(
@@ -175,7 +179,8 @@ function getDefaultDownloadPath(): string {
 async function downloadTrack(
   track: SpotifyTrack,
   saveTo: string,
-  index?: number
+  index?: number,
+  lastIndex?: number
 ) {
   try {
     // Send the API request
@@ -207,7 +212,11 @@ async function downloadTrack(
       const { title, artists, cover } = metadata;
 
       // Define the filename based on the title and artist
-      const filename = sanitizeFilename(`${getTrackName(track)}.mp3`);
+      const filename = sanitizeFilename(
+        `${
+          index !== undefined ? `${padNumber(index + 1, lastIndex!)} - ` : ""
+        }${getTrackName(track)}.mp3`
+      );
 
       // Download the MP3 file
       const mp3Response = await axios.get(link, {
@@ -319,7 +328,12 @@ yargs(hideBin(process.argv))
             let attempt = 0;
             while (attempt < maxRetries) {
               try {
-                await downloadTrack(track, fullPath, index);
+                await downloadTrack(
+                  track,
+                  fullPath,
+                  index,
+                  data.tracks.length - 1
+                );
                 mulbar.log(chalk.green(`✓ ${logStr}\n`));
                 downloadStatus.success.push(track);
                 break; // Exit loop if successful
